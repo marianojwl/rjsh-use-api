@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-function useApi(endpoint, query='', auto=false) {
+function useApi(endpoint, query='', auto=false, dependencies=[]) {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -21,11 +21,11 @@ function useApi(endpoint, query='', auto=false) {
     }
   }
 
-  const post = async (body) => {
+  const post = async (body, method='POST') => {
     setLoading(true);
     try {
       const res = await fetch(endpoint, {
-        method: 'POST',
+        method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
@@ -38,11 +38,13 @@ function useApi(endpoint, query='', auto=false) {
     }
   }
 
+  const put = async (body) => post(body, 'PUT');
+
   useEffect(() => {
     if(auto) get(query);
-  }, []);
+  }, dependencies);
 
-  return { response, loading, get, post };
+  return { response, loading, get, post, put };
 }
 
 export default useApi;
