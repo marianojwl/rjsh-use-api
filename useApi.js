@@ -6,13 +6,16 @@ function useApi(endpoint, query='', auto=false, dependencies=[], callback=null) 
   const [count, setCount] = useState(0);
 
   const handleFecthError = (e) => {
-    alert('Error de conexión.  No se pudo completar la solicitud.  Verifique su conexión a internet y, si el problema persiste, contacte al administrador del sistema.');
+    console.error('Error de conexión.  No se pudo completar la solicitud.  Verifique su conexión a internet y, si el problema persiste, contacte al administrador del sistema.');
   }
 
   const get = async (query='') => {
     setLoading(true);
     try{
-      const res = await fetch(endpoint + query);
+      const res = await fetch(endpoint + query, {
+        method: 'GET',
+        // credentials: 'include', // Send cookies
+      });
       const json = await res.json();
       setResponse(json);
       if(callback) callback(json);
@@ -31,6 +34,7 @@ function useApi(endpoint, query='', auto=false, dependencies=[], callback=null) 
         method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
+        // credentials: 'include', // Send cookies
       });
       const json = await res.json();
       setResponse(json);
