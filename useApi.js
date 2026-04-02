@@ -5,6 +5,12 @@ function useApi(endpoint, query='', auto=false, dependencies=[], callback=null) 
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(0);
 
+  const reset = () => {
+    setResponse(null);
+    setLoading(false);
+    setCount(0);
+  }
+
   const handleFecthError = (e) => {
     console.error('Error de conexión.  No se pudo completar la solicitud.  Verifique su conexión a internet y, si el problema persiste, contacte al administrador del sistema.');
   }
@@ -53,9 +59,9 @@ function useApi(endpoint, query='', auto=false, dependencies=[], callback=null) 
     if(count === 0 && !auto) return;
     setCount(prev=>prev+1);
     get(query);
-  }, dependencies);
+  }, [...dependencies, query]);
 
-  return { response, loading, get, post, put };
+  return { response, loading, get, post, put, reset };
 }
 
 export default useApi;
